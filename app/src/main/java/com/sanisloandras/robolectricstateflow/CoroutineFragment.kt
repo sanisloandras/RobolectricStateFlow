@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -31,10 +32,11 @@ class CoroutineFragment : Fragment(R.layout.fragment_coroutine) {
     var f2: String = ""
     var f3: String = ""
 
+    private val disposables = CompositeDisposable()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launchAndRepeatWithViewLifecycle {
+        /*launchAndRepeatWithViewLifecycle {
             viewModel.f1.collect {
                 f1 = it
             }
@@ -49,7 +51,16 @@ class CoroutineFragment : Fragment(R.layout.fragment_coroutine) {
             viewModel.f3.collect {
                 f3 = it
             }
-        }
+        }*/
+        disposables.add(viewModel.f1.subscribe {
+            f1 = it
+        })
+        disposables.add(viewModel.f2.subscribe {
+            f2 = it
+        })
+        disposables.add(viewModel.f3.subscribe {
+            f3 = it
+        })
     }
 }
 
